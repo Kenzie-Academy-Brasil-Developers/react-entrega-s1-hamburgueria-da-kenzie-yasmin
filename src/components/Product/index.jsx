@@ -7,7 +7,8 @@ const Product = ({produto, handleClick, children}) => {
     return (
        <div className={children === 'Adicionar'? 'card' : 'cardCarrinho' }>
            <figure><img src={img} alt={name}/></figure>
-           <div><p className='name'>{name}</p>
+           <div>
+            <p className='name'>{name}</p>
            <p className='categoria'>{category}</p>
            </div>
            <p className='preco'>R$ {price.toFixed(2)}</p>

@@ -9,9 +9,9 @@ function App() {
 
   const [currentSale, setCurrentSale] = useState([]);
 
-  const [userInput, setUserInput] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     const fetchResponse = async () => {
@@ -22,16 +22,17 @@ function App() {
       const jsonResponse = await response.json();
 
       setProducts(jsonResponse);
+      setFilteredProducts(jsonResponse);
     };
 
     fetchResponse();
   }, []);
 
-  const showProducts = (produtoFiltrado) => {
+  const showProducts = () => {
     const filtraPesquisa = products.filter((item) => {
       return (
-        item.name.toUpperCase().includes(produtoFiltrado.toUpperCase()) ||
-        item.category.toUpperCase().includes(produtoFiltrado.toUpperCase())
+        item.name.toUpperCase().includes(input.toUpperCase()) ||
+        item.category.toUpperCase().includes(input.toUpperCase())
       );
     });
     setFilteredProducts(filtraPesquisa);
@@ -61,38 +62,47 @@ function App() {
       <header>
         <img src={fotoLogo} alt="Logo Burguer Kenzie" />
         <form>
-          <input type="text" placeholder="Digitar Pesquisa" />
-          <button> Pesquisar </button>
+          <input
+            type="text"
+            placeholder="Digitar Pesquisa"
+            onChange={(event) => setInput(event.target.value)}
+          />
+          <button type="button" onClick={() => showProducts()}>
+            Pesquisar
+          </button>
         </form>
       </header>
 
       <main>
         <section className="vitrine">
           <ProductsList
-            products={products}
+            products={filteredProducts}
             handleClick={handleClick}
             children={"Adicionar"}
           />
         </section>
 
         <section className="carrinho">
-          {currentSale.length >= 1 ? <div className='divProduct'> 
-            <h2>Carrinho de Compras</h2>
-          <ProductsList
-            products={currentSale}
-            handleClick={handleClickRemove}
-            children={"excluir"}
-          />
-          {currentSale.length > 0 && <Cart currentSale={currentSale} />}
-          <button className="deleteAll" onClick={removeAllItems}>Remover Todos </button></div>  :
-           <div className="divCarrinho">
-             <h2>Carrinho de Compras</h2>
-             <p>Sua Sacola Esta Vazia</p>
-             <span>Adicione Itens</span>
-           </div>
-
-           }
-         
+          {currentSale.length >= 1 ? (
+            <div className="divProduct">
+              <h2>Carrinho de Compras</h2>
+              <ProductsList
+                products={currentSale}
+                handleClick={handleClickRemove}
+                children={"excluir"}
+              />
+              {currentSale.length > 0 && <Cart currentSale={currentSale} />}
+              <button className="deleteAll" onClick={removeAllItems}>
+                Remover Todos{" "}
+              </button>
+            </div>
+          ) : (
+            <div className="divCarrinho">
+              <h2>Carrinho de Compras</h2>
+              <p>Sua Sacola Esta Vazia</p>
+              <span>Adicione Itens</span>
+            </div>
+          )}
         </section>
       </main>
     </>
